@@ -10,8 +10,9 @@ import java.io.IOException;
 
 public class World {
 
-    private Tile[] tiles;
+    public static Tile[] tiles;
     public static int width, height;
+    public static final int TILE_SIZE = 16;
 
     public World(String path) {
         try {
@@ -29,7 +30,7 @@ public class World {
                         tiles[xx + (yy * width)] = new FloorTile(xx*16, yy*16,Tile.TILE_FLOOR);
                     } else if (pixels[pixelAtual] == 0xFFFFFFFF) {
                         //Parede
-                        tiles[xx + (yy * width)] = new FloorTile(xx*16, yy*16,Tile.TILE_WALL);
+                        tiles[xx + (yy * width)] = new WallTile(xx*16, yy*16,Tile.TILE_WALL);
                     }  else if (pixels[pixelAtual] == 0xFFFF5900) {
                         //Arma
                         Game.entities.add(new Staff(xx*16, yy*16,16,16, Entity.STAFF_EN));
@@ -57,6 +58,28 @@ public class World {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static boolean isFree(int xNext, int yNext) {
+        int footWidth = 10;
+        int footHeight = 6;
+        int offsetX = (TILE_SIZE - footWidth) / 2;
+        int offsetY = TILE_SIZE - footHeight;
+
+        int left   = xNext + offsetX;
+        int right  = xNext + offsetX + footWidth - 1;
+        int top    = yNext + offsetY;
+        int bottom = yNext + offsetY + footHeight - 1;
+
+        int x1 = left  / TILE_SIZE, y1 = top    / TILE_SIZE;
+        int x2 = right / TILE_SIZE, y2 = top    / TILE_SIZE;
+        int x3 = left  / TILE_SIZE, y3 = bottom / TILE_SIZE;
+        int x4 = right / TILE_SIZE, y4 = bottom / TILE_SIZE;
+
+        return !((tiles[x1 + (y1 * World.width)] instanceof WallTile) ||
+                (tiles[x2 + (y2 * World.width)] instanceof WallTile) ||
+                (tiles[x3 + (y3 * World.width)] instanceof WallTile) ||
+                (tiles[x4 + (y4 * World.width)] instanceof WallTile));
     }
 
     public void render(Graphics g) {
