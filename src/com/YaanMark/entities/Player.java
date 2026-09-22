@@ -1,6 +1,8 @@
 package com.YaanMark.entities;
 
 import com.YaanMark.main.Game;
+import com.YaanMark.world.Camera;
+import com.YaanMark.world.World;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -83,22 +85,26 @@ public class Player extends Entity{
                 }
             }
         }
+
+        Camera.x = Camera.clamp(this.getX() - (Game.WIDTH / 2), 0, World.width * 16 - Game.WIDTH);
+        Camera.y = Camera.clamp(this.getY() - (Game.HEIGHT / 2), 0, World.height * 16 - Game.HEIGHT);
+
     }
 
     public void render(Graphics g) {
 
         if (!down && !up && !right && !left) {
-            g.drawImage(downPlayer[1], this.getX(), this.getY(), null);
+            g.drawImage(downPlayer[1], this.getX() - Camera.x, this.getY() - Camera.y, null);
         }
 
         if (down) {
-            g.drawImage(downPlayer[index], this.getX(), this.getY(), null);
+            g.drawImage(downPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
         } else if (up) {
-            g.drawImage(upPlayer[index], this.getX(), this.getY(), null);
+            g.drawImage(upPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
         } else if (right) {
-            g.drawImage(rightPlayer[index], this.getX(), this.getY(), null);
+            g.drawImage(rightPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
         } else if (left) {
-            g.drawImage(leftPlayer[index], this.getX(), this.getY(), null);
+            g.drawImage(leftPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
         }
     }
 

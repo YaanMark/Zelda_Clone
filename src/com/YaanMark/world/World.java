@@ -60,8 +60,15 @@ public class World {
     }
 
     public void render(Graphics g) {
-        for (int xx = 0; xx < width; xx++) {
-            for (int yy = 0; yy < height; yy++) {
+        int xStart = Camera.x >> 4;
+        int yStart = Camera.y >> 4;
+
+        int xFinal = xStart + (Game.WIDTH >> 4);
+        int yFinal = yStart + (Game.HEIGHT >> 4);
+
+        for (int xx = xStart; xx <= xFinal; xx++) {
+            for (int yy = yStart; yy <= yFinal; yy++) {
+                if (xx < 0 || yy < 0 || xx >= width || yy >= height) continue;
                 Tile tile = tiles[xx + (yy*width)];
                 tile.render(g);
             }
